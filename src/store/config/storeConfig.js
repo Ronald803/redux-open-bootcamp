@@ -1,6 +1,9 @@
-import {createStore} from 'redux'
+import createSagaMiddleware from 'redux-saga';
+import {compose, createStore} from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { rootReducer } from '../reducers/rootReducer'
+import { watcherSaga } from '../sagas/sagas';
+
 
 export const createAppStore= ()=>{
     let store = createStore(rootReducer,composeWithDevTools())
@@ -8,4 +11,15 @@ export const createAppStore= ()=>{
     return store;
 }
 
-//falta 12:47 minutos para terminar el video del tempa 23 parte 1
+export const createAppAsyncStore= ()=>{
+    const sagaMiddleware = createSagaMiddleware();
+    let store = createStore(
+        rootReducer,
+        compose(
+            sagaMiddleware,composeWithDevTools()
+            )
+        )
+    //We init the Watcher Saga
+    sagaMiddleware.run(watcherSaga);
+    return store;
+}
